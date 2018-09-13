@@ -1,69 +1,72 @@
-# -*- coding:utf8 -*-
-from bs4 import BeautifulSoup
+# -*- coding: utf-8 -*-
 import requests
 import time
-import re
-
+import sqlite3
 
 
 def get_cookies(username,password):
+    db = sqlite3.connect('db.db')
+    sql = """CREATE TABLE "cookies" ("update_time"  INTEGER,"cookies"  TEXT,"username"  TEXT)"""
+    cur = db.cursor()
     try:
-        f = open('test.txt', 'r+')
-    except FileNotFoundError:
-        pass
-    else:
-        result = f.read().split('\n')
-        for i in result:
-            up_time = i[1:11]
-            x=i.split(',')
-            print(x[2])
-
-    s=requests.session()
-    postData={'mod':'logging',
-              'action':'login',
-              'loginsubmit':'yes',
-              'infloat':'yes',
-              'lssubmit':'yes',
-              'inajax':1,
-              'username':username,
-              'password':password,
-              'quickforward':'yes',
-              'handlekey':'ls'}
-    rs=s.post(url='http://bbs.21ic.com/member.php',data=postData)
-    cookie = s.cookies.get_dict()
-    res = requests.post('http://my.21ic.com/member.php?mod=logging&action=login', cookies=cookie)
-    try:
-        c=cookie['www_username']
+        cur.execute(sql)
+        db.commit()
+        db.close()
     except:
-        return rs.content.decode()
+        pass
+    # 解决建表问题和判断表是否存在，不存在数据库，建数据库，不存在表，建表。
+        sql = """select cookies from cookies where username = \"{}\"""".format(username)
+    cur = db.cursor()
+    cur.execute(sql)
+    re=cur.fetchall()
+    if re==[]:
+        s = requests.session()
+        postData = {'mod': 'logging',
+                    'action': 'login',
+                    'loginsubmit': 'yes',
+                    'infloat': 'yes',
+                    'lssubmit': 'yes',
+                    'inajax': 1,
+                    'username': username,
+                    'password': password,
+                    'quickforward': 'yes',
+                    'handlekey': 'ls'}
+        s.post(url='http://bbs.21ic.com/member.php', data=postData)
+        cookie = s.cookies.get_dict()
+        sql = """insert into cookies values ({},\"{}\",\"{}\")""".format(time.time(), cookie, username)
+        db = sqlite3.connect('db.db')
+        cur = db.cursor()
+        cur.execute(sql)
+        db.commit()
+        db.close()
+        return cookie
     else:
-        try:
-            f = open('test.txt', 'r+')
-        except FileNotFoundError:
-            ff = open('test.txt', 'w')
-            ff.close()
-        else:
-            t = {int(time.time()), username, cookie}
-            f.read()
-            f.write('\n')
-            f.write(str(t))
-            f.close()
-        return 1
+        for i in re :
+            if time.time()-i[0]>86400:
+                s = requests.session()
+                postData = {'mod': 'logging',
+                            'action': 'login',
+                            'loginsubmit': 'yes',
+                            'infloat': 'yes',
+                            'lssubmit': 'yes',
+                            'inajax': 1,
+                            'username': username,
+                            'password': password,
+                            'quickforward': 'yes',
+                            'handlekey': 'ls'}
+                s.post(url='http://bbs.21ic.com/member.php', data=postData)
+                cookie = s.cookies.get_dict()
+                sql="""insert into cookies values ({},\"{}\",{})""".format(time.time(),cookie,username)
+                return cookie
+            else:
+                sql = """select cookies from cookies where username = \"{}\"""".format(username)
+                db = sqlite3.connect('db.db')
+                cur = db.cursor()
+                cur.execute(sql)
+                re=cur.fetchone()
+                return re[0]
 
-username='韦天王'
-password='doushi123888'
-#print(get_cookies(username,password))
+username='黄黄'
+password='ds1234567890'
 
-try:
-    f = open('test.txt', 'r+')
-except FileNotFoundError:
-    pass
-else:
-    result = f.read().split('\n')
-    for i in result:
-        up_time = i[1:11]
-        user_name = i.split(',')
-        if username==user_name:
-            n=time.time()-int(up_time)
-            if n>86400:
-
+print(get_cookies(username,password))
