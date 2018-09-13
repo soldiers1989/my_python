@@ -1,6 +1,5 @@
 # -*- coding:utf-8 -*-
 import urllib
-import urllib2
 import pymysql
 from bs4 import BeautifulSoup
 import re
@@ -15,8 +14,8 @@ def get_user_name(max_page):
                            cursorclass=pymysql.cursors.DictCursor)
     cur = conn.cursor()
     url='http://blog.chinaaet.com/posts?page={}'.format(max_page)
-    request = urllib2.Request(url=url)
-    response = urllib2.urlopen(request)
+    request = urllib.Request(url=url)
+    response = urllib.urlopen(request)
     soup = BeautifulSoup(response, "html.parser")
     link_name=[]
     link_title=[]

@@ -66,6 +66,6 @@ def get_list(key):
                 conn.commit()
             else:
                 pass
-            print(i,name)
+            print(name)
     return i
 print(get_list(keywords))
