@@ -26,4 +26,3 @@ for i in range(2,number):
     cur.execute(sql)
     conn.commit()
     print(i)
-#print(len(get_id('20180428131693546417276867_7544922',8)))
