@@ -2,6 +2,7 @@
 import requests
 import time
 import sqlite3
+import json
 
 
 def get_cookies(username,password):
@@ -15,7 +16,7 @@ def get_cookies(username,password):
     except:
         pass
     # 解决建表问题和判断表是否存在，不存在数据库，建数据库，不存在表，建表。
-        sql = """select cookies from cookies where username = \"{}\"""".format(username)
+        sql = """select * from cookies where username = \"{}\"""".format(username)
     cur = db.cursor()
     cur.execute(sql)
     re=cur.fetchall()
@@ -41,32 +42,38 @@ def get_cookies(username,password):
         db.close()
         return cookie
     else:
-        for i in re :
-            if time.time()-i[0]>86400:
-                s = requests.session()
-                postData = {'mod': 'logging',
-                            'action': 'login',
-                            'loginsubmit': 'yes',
-                            'infloat': 'yes',
-                            'lssubmit': 'yes',
-                            'inajax': 1,
-                            'username': username,
-                            'password': password,
-                            'quickforward': 'yes',
-                            'handlekey': 'ls'}
-                s.post(url='http://bbs.21ic.com/member.php', data=postData)
-                cookie = s.cookies.get_dict()
-                sql="""insert into cookies values ({},\"{}\",{})""".format(time.time(),cookie,username)
-                return cookie
-            else:
-                sql = """select cookies from cookies where username = \"{}\"""".format(username)
-                db = sqlite3.connect('db.db')
-                cur = db.cursor()
-                cur.execute(sql)
-                re=cur.fetchone()
-                return re[0]
+        if time.time() - re[0][0] > 86400:
+            s = requests.session()
+            postData = {'mod': 'logging',
+                        'action': 'login',
+                        'loginsubmit': 'yes',
+                        'infloat': 'yes',
+                        'lssubmit': 'yes',
+                        'inajax': 1,
+                        'username': username,
+                        'password': password,
+                        'quickforward': 'yes',
+                        'handlekey': 'ls'}
+            s.post(url='http://bbs.21ic.com/member.php', data=postData)
+            cookie = s.cookies.get_dict()
+            sql = """insert into cookies values ({},\"{}\",{})""".format(time.time(), cookie, username)
+            return cookie
+        else:
+            sql = """select cookies from cookies where username = \"{}\"""".format(username)
+            db = sqlite3.connect('db.db')
+            cur = db.cursor()
+            cur.execute(sql)
+            re = cur.fetchone()
+            return re[0]
 
 username='黄黄'
 password='ds1234567890'
 
-print(get_cookies(username,password))
+cookies=get_cookies(username,password)
+print(str(cookies))
+
+print(json.loads(cookies))
+#cookie = cookies.get_dict()
+#res=requests.post('https://cloud.flyme.cn/browser/index.jsp', cookies=cookies)
+
+#print(res.content)
