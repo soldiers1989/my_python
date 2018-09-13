@@ -1,0 +1,8 @@
+post_with_cookies.py    一次发送一条站内信，循环发送
+
+post_with_cookies_threading.py    一次发送30条站内信，循环发送
+
+post_with_cookies_threading_queue.py    队列方式发送站内信，循环发送（有问题，需要class生成线程，尚未完成）
+
+Dianyuanwang_luntan/post_with_cookie_luntan.py  一个账户，批量发送帖子的回复（容易被举报，被封）
+Dianyuanwang_luntan/post_with_more_id.py  4个账户，批量发送帖子的回复,4个号被封

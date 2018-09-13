@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="PYTHON_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="jdk" jdkName="Python 2.7 (venv)" jdkType="Python SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="python-21ic" />
+    <orderEntry type="module" module-name="python_tel" />
+    <orderEntry type="module" module-name="dianyuan" />
+    <orderEntry type="module" module-name="excle处理" />
+    <orderEntry type="module" module-name="chinaaet" />
+    <orderEntry type="module" module-name="elecfans" />
+    <orderEntry type="module" module-name="qq群" />
+    <orderEntry type="module" module-name="baidu_app" />
+    <orderEntry type="module" module-name="qq_exe_use" />
+    <orderEntry type="module" module-name="FAE消息获取" />
+  </component>
+  <component name="TestRunnerService">
+    <option name="PROJECT_TEST_RUNNER" value="Unittests" />
+  </component>
+</module>
